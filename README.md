@@ -1,1 +1,0 @@
-# -promo-r-module-2-pair-2-sprint-2-ada-kitten
