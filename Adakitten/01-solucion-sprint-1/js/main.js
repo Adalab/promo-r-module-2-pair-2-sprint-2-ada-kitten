@@ -13,6 +13,7 @@ const linkNewFormElememt = document.querySelector('.js-button-new-form');
 const labelMesageError = document.querySelector('.js-label-error');
 const input_search_desc = document.querySelector('.js_in_search_desc');
 const inputRace = document.querySelector('.js-input-race');
+const input_search_race = document.querySelector('.js_in_search_race');
 
 //Objetos con cada gatito
 const kittenData_1 = {
@@ -42,7 +43,8 @@ const newKittenDataObject = {
   valueRace: inputRace.value,
 };
 
-const kittenDataList = [kittenData_1, kittenData_2, kittenData_3];
+// const kittenDataList = [kittenData_1, kittenData_2, kittenData_3];
+let kittenDataList = [];
 
 //Funciones
 function renderKitten(kittenData) {
@@ -134,6 +136,8 @@ function cancelNewKitten(event) {
 function filterKitten(event) {
   event.preventDefault();
   const descrSearchText = input_search_desc.value;
+  const raceSearchText = input_search_race.value;
+
   listElement.innerHTML = '';
   //   for (const kittenItem of kittenDataList) {
   //     if (kittenItem.desc.includes(descrSearchText)) {
@@ -143,14 +147,37 @@ function filterKitten(event) {
   const kittenDescription = kittenDataList.filter((kitten) =>
     kitten.desc.includes(descrSearchText)
   );
-  renderKittenList(kittenDescription);
+  const kittenRace = kittenDataList.filter((kitten) =>
+    kitten.race.includes(raceSearchText)
+  );
+  renderKittenList(kittenDescription,kittenRace);
+  // renderKittenList(kittenRace);
+
+
 }
 
 //Mostrar el litado de gatitos en ell HTML
-renderKittenList(kittenDataList);
+// renderKittenList(kittenDataList);
 
 //Eventos
 linkNewFormElememt.addEventListener('click', handleClickNewCatForm);
 searchButton.addEventListener('click', filterKitten);
 buttonAdd.addEventListener('click', addNewKitten);
 buttonCancelForm.addEventListener('click', cancelNewKitten);
+
+
+//fetch Ejercico 1 peticiones al servidor
+
+const GITHUB_USER = 'nayraromero';
+const SERVER_URL = `https://dev.adalab.es/api/kittens/${GITHUB_USER}`;
+
+fetch(SERVER_URL, {
+  method: 'GET',
+  headers: {'Content-Type': 'application/json'},
+}).then(response=>response.json())
+.then(dataList =>{
+  kittenDataList = dataList.results;
+  console.log(kittenDataList);
+  renderKittenList(kittenDataList);
+});
+renderKittenList(kittenDataList);
