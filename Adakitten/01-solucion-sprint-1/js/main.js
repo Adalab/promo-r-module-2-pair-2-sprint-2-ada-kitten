@@ -98,6 +98,38 @@ function addNewKitten(event) {
   const valueName = inputName.value;
   const valueRace = inputRace.value;
 
+  const newKittenDataObject = {
+    image: newImage,
+    name: newName,
+    desc: newDescription,
+    race: newRace,
+  };
+
+  fetch(`https://dev.adalab.es/api/kittens/${GITHUB_USER}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(newKittenDataObject),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        kittenDataList = newKittenDataObject.push();
+        localStorage.setItem('kittensList', JSON.stringify(kittenDataList));
+        renderKittenList(kittenDataList);
+        inputDesc.value = '';
+        inputName.value = '';
+        inputPhoto.value = '';
+        inputRace.value = '';
+        //Completa y/o modifica el código:
+        //Agrega el nuevo gatito al listado
+        //Guarda el listado actualizado en el local stoarge
+        //Visualiza nuevamente el listado de gatitos
+        //Limpia los valores de cada input
+      } else {
+        console.log('error');
+      }
+    });
+
   if (valueDesc === '' && valuePhoto === '' && valueName === '') {
     labelMesageError.innerHTML = 'Debe rellenar todos los valores';
   } else {
@@ -150,10 +182,8 @@ function filterKitten(event) {
   const kittenRace = kittenDataList.filter((kitten) =>
     kitten.race.includes(raceSearchText)
   );
-  renderKittenList(kittenDescription,kittenRace);
+  renderKittenList(kittenDescription, kittenRace);
   // renderKittenList(kittenRace);
-
-
 }
 
 //Mostrar el litado de gatitos en ell HTML
@@ -165,19 +195,45 @@ searchButton.addEventListener('click', filterKitten);
 buttonAdd.addEventListener('click', addNewKitten);
 buttonCancelForm.addEventListener('click', cancelNewKitten);
 
-
 //fetch Ejercico 1 peticiones al servidor
 
 const GITHUB_USER = 'nayraromero';
 const SERVER_URL = `https://dev.adalab.es/api/kittens/${GITHUB_USER}`;
 
-fetch(SERVER_URL, {
-  method: 'GET',
-  headers: {'Content-Type': 'application/json'},
-}).then(response=>response.json())
-.then(dataList =>{
-  kittenDataList = dataList.results;
-  console.log(kittenDataList);
+//LOCAL STORAGE
+
+let kittenListStored = JSON.parse(localStorage.getItem('kittensList'));
+
+if (kittenListStored !== null) {
+  kittenDataList = kittenListStored;
   renderKittenList(kittenDataList);
-});
-renderKittenList(kittenDataList);
+} else {
+  fetch(SERVER_URL, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  })
+    .then((response) => response.json())
+    .then((dataList) => {
+      kittenDataList = dataList.results;
+      localStorage.setItem('kittensList', JSON.stringify(kittenDataList));
+      renderKittenList(kittenDataList);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
+
+// fetch('https://dev.adalab.es/api/kittens/nayraromero', {
+//   method: 'POST',
+//   headers: { 'Content-Type': 'application/json' },
+//   body: JSON.stringify({
+//     image: 'https://ychef.files.bbci.co.uk/976x549/p07ryyyj.jpg',
+//     name: 'Anastacio',
+//     desc: 'Ruiseño, juguetón, le guta estar tranquilo y que nadie le moleste. Es una maravilla acariciarle!',
+//     race: 'British Shorthair',
+//   }),
+// }).then((response) => response.json());
+// then((data) => {
+//   kittenDataList += data.results;
+//   localStorage.setItem('newKittenList', JSON.stringify(kittenDataList));
+// });
