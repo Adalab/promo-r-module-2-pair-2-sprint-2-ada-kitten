@@ -44,22 +44,55 @@ if (kittenListStored) {
 
 //Funciones
 function renderKitten(kittenData) {
-  const kitten = `<li class="card">
-    <article>
-      <img
-        class="card_img"
-        src=${kittenData.image}
-        alt="gatito"
-      />
-      <h3 class="card_title">${kittenData.name}</h3>
-      <h3 class="card_race">${kittenData.race}</h3>
-      <p class="card_description">
-      ${kittenData.desc}
-      </p>
-    </article>
-    </li>`;
-  return kitten;
+  //Escrito en el DOM
+  const liElement = document.createElement('li');
+  liElement.classList.add('card');
+  const articleElement = document.createElement('article');
+
+  const imgElement = document.createElement('img');
+  imgElement.classList.add('card_img');
+  imgElement.setAttribute('src', kittenData.image);
+  imgElement.setAttribute('alt', 'gatito');
+
+  const titleElement = document.createElement('h3');
+  titleElement.classList.add('card_title');
+  const titleText = document.createTextNode(kittenData.name);
+  titleElement.appendChild(titleText);
+
+  const raceElement = document.createElement('h3');
+  raceElement.classList.add('card_race');
+  const raceText = document.createTextNode(kittenData.race);
+  raceElement.appendChild(raceText);
+
+  const descrElement = document.createElement('p');
+  descrElement.classList.add('card_description');
+  const descrText = document.createTextNode(kittenData.desc);
+  descrElement.appendChild(descrText);
+
+  articleElement.appendChild(descrElement);
+  articleElement.appendChild(raceElement);
+  articleElement.appendChild(titleElement);
+  articleElement.appendChild(imgElement);
+
+  liElement.appendChild(articleElement);
 }
+// ESCRITO EN HTML CON JS
+
+// const kitten = `<li class="card">
+//   <article>
+//     <img
+//       class="card_img"
+//       src=${kittenData.image}
+//       alt="gatito"
+//     />
+//     <h3 class="card_title">${kittenData.name}</h3>
+//     <h3 class="card_race">${kittenData.race}</h3>
+//     <p class="card_description">
+//     ${kittenData.desc}
+//     </p>
+//   </article>
+//   </li>`;
+// return kitten;
 
 function renderKittenList(kittenDataList) {
   listElement.innerHTML = '';
@@ -130,36 +163,36 @@ function filterKitten(event) {
 }
 
 //add new kitten al server
-function addNewKittenServer(newKittenDataObject) {
-  fetch(SERVER_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(newKittenDataObject),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-      if (data.success) {
-        //Agregar un nuevo gatito al listado
-        kittenDataList.push(newKittenDataObject);
-        localStorage.setItem('kittensList', JSON.stringify(kittenDataList));
+// function addNewKittenServer(newKittenDataObject) {
+//   fetch(SERVER_URL, {
+//     method: 'POST',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify(newKittenDataObject),
+//   })
+//     .then((response) => response.json())
+//     .then((data) => {
+//       console.log(data);
+//       if (data.success) {
+//         //Agregar un nuevo gatito al listado
+//         kittenDataList.push(newKittenDataObject);
+//         localStorage.setItem('kittensList', JSON.stringify(kittenDataList));
 
-        //Limpiar los valores del gatito
-        inputDesc.value = '';
-        inputPhoto.value = '';
-        inputName.value = '';
-        inputRace.value = '';
+//         //Limpiar los valores del gatito
+//         inputDesc.value = '';
+//         inputPhoto.value = '';
+//         inputName.value = '';
+//         inputRace.value = '';
 
-        //Mostrar mensaje de que se ha creado correctamente
-        labelMesageError.innerHTML = 'Mola! Un nuevo gatito en Adalab!';
+//         //Mostrar mensaje de que se ha creado correctamente
+//         labelMesageError.innerHTML = 'Mola! Un nuevo gatito en Adalab!';
 
-        //vuelve a pintar el listado de gatitos
-        renderKittenList(kittenDataList);
-      } else {
-        labelMesageError.innerHTML = 'No se ha podido guardar el gatito en el servidor. Inténtalo más tarde.';
-      }
-    });
-}
+//         //vuelve a pintar el listado de gatitos
+//         renderKittenList(kittenDataList);
+//       } else {
+//         labelMesageError.innerHTML = 'No se ha podido guardar el gatito en el servidor. Inténtalo más tarde.';
+//       }
+//     });
+// }
 
 //Mostrar el litado de gatitos en ell HTML
 renderKittenList(kittenDataList);
